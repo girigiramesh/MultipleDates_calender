@@ -47,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Ranging date selected
         Calendar today = Calendar.getInstance();
         ArrayList<Date> dates = new ArrayList<Date>();
         today.add(Calendar.DATE, 2);
         dates.add(today.getTime());
         today.add(Calendar.DATE, 4);
         dates.add(today.getTime());
+        //
         calendar.init(back.getTime(), nextYear.getTime()) //
                 .inMode(CalendarPickerView.SelectionMode.RANGE) //
                 .withSelectedDates(dates);
