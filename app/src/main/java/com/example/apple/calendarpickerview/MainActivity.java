@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        initCustomSpinner();
     }
 
     // Collection = ArrayList methods.
@@ -91,5 +95,31 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Date> holidays = new ArrayList<>();
         holidays.add(date);
         return holidays;
+    }
+
+    private void initCustomSpinner() {
+
+        Spinner spinnerCustom = (Spinner) findViewById(R.id.spinnerCustom);
+        // Spinner Drop down elements
+        ArrayList<String> languages = new ArrayList<String>();
+        languages.add("Andorid");
+        languages.add("IOS");
+        languages.add("PHP");
+        languages.add("Java");
+        languages.add(".Net");
+        CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(MainActivity.this, languages);
+        spinnerCustom.setAdapter(customSpinnerAdapter);
+        spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), "Android Custom Spinner Example Output..." + item, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }

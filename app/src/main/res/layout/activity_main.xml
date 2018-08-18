@@ -10,13 +10,21 @@
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <TextView
-        android:paddingTop="90dp"
         android:id="@+id/tv_showing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/app_name"/>
+        android:paddingTop="90dp"
+        android:text="@string/app_name" />
+
+    <Spinner
+        android:id="@+id/spinnerCustom"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/spinner_shape"
+        android:spinnerMode="dropdown" />
+
 </LinearLayout>
