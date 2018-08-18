@@ -2,8 +2,7 @@ package com.example.apple.calendarpickerview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -24,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private CalendarPickerView calendar;
     TextView mTvShowing;
+    int mRangeStartYear, mRangeStartMonth, mRangeStartDate, mRangeEndMonth, mRangeEndYear, mRangeEndDate, i, mHavingDays;
+    ArrayList<String> mDatesInString = new ArrayList<>();
+    int mHavingMonths = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String[] dateInString = {"20-08-2018", "24-08-2018", "29-08-2018"};
+        String[] dateInString = {"17-08-2018", "29-08-2018", "24-09-2018", "15-09-2018", "05-10-2018", "23-11-2018", "01-12-2018"};
         for (String aDate : dateInString) {
             try {
                 Date data = sdf.parse(String.valueOf(aDate));
@@ -75,6 +77,70 @@ public class MainActivity extends AppCompatActivity {
                 calendar.highlightDates(holidays);
             } catch (ParseException e) {
                 e.printStackTrace();
+            }
+        }
+
+        // implementing the for loop based on dates also validating the range date, range month(Month days) and range year(Leap year/Non-leap year)
+        String splitFromDate = "2018-12-27"; // 2018-08-18
+        mRangeStartYear = Integer.parseInt(splitFromDate.split("-")[0]); // 2018
+        mRangeStartMonth = Integer.parseInt(splitFromDate.split("-")[1]); // 08
+        mRangeStartDate = Integer.parseInt(splitFromDate.split("-")[2]); // 18
+
+        String splitToDate = "2019-01-27"; // 2018-08-19
+        mRangeEndYear = Integer.parseInt(splitToDate.split("-")[0]);
+        mRangeEndMonth = Integer.parseInt(splitToDate.split("-")[1]);
+        mRangeEndDate = Integer.parseInt(splitToDate.split("-")[2]);
+
+        // CalendarPickerView multiple date select
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (mRangeStartDate != 0) {
+            for (; mRangeStartYear <= mRangeEndYear; mRangeStartYear++) {
+                if (mRangeStartYear == mRangeEndYear) {
+                    mRangeStartMonth = 1;
+                    mHavingMonths = mRangeEndMonth;
+                }
+                Log.d("info>>", "mRangeStartYear: " + mRangeStartYear);
+                for (; mRangeStartMonth <= mHavingMonths; mRangeStartMonth++) {
+                    Log.d("info>>", "mRangeStartMonth: " + mRangeStartMonth);
+                    if ((mRangeStartYear % 4 == 0) && (mRangeStartYear % 100 != 0) || (mRangeStartYear % 400 == 0)) {
+                        if (mRangeStartMonth == 2) {
+                            mHavingDays = 29; // Is leap year feb month
+                        } else if ((mRangeStartMonth == 7) || ((mRangeStartMonth % 2) == 0)) {
+                            mHavingDays = 31; // Is july & even months
+                        } else {
+                            mHavingDays = 30; // Is odd months
+                        }
+                    } else {
+                        if (mRangeStartMonth == 2) {
+                            mHavingDays = 28; // Is leap year feb month
+                        } else if ((mRangeStartMonth == 7) || ((mRangeStartMonth % 2) == 0)) {
+                            mHavingDays = 31; // Is july & even months
+                        } else {
+                            mHavingDays = 30; // Is odd months
+                        }
+                    }
+                    if (mRangeStartMonth == mRangeEndMonth) {
+                        mRangeStartDate = 1;
+                        mHavingDays = mRangeEndDate;
+                    }
+                    for (; mRangeStartDate <= mHavingDays; mRangeStartDate++) {
+                        Log.d("info>>", "mRangeStartDate: " + mRangeStartDate);
+                        mDatesInString.add(String.valueOf(mRangeStartYear) + "-" + String.valueOf(mRangeStartMonth) + "-" + mRangeStartDate);
+                        Log.d("info>>", "simpleDateFormat: " + String.valueOf(mRangeStartYear) + "-" + String.valueOf(mRangeStartMonth) + "-" + mRangeStartDate);
+
+                        for (String aDate : mDatesInString) {
+                            try {
+                                Date data = simpleDateFormat.parse(String.valueOf(aDate));
+                                ArrayList<Date> holidays = new ArrayList<>();
+                                holidays.add(data);
+                                calendar.highlightDates(holidays);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
             }
         }
         initCustomSpinner();
